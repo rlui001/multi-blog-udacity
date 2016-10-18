@@ -12,3 +12,9 @@ Steps to run:
 3. Add directory (where the files are downloaded) to Google App Engine
 4. Run it in Google App Engine
 5. Press the 'browser' button to automatically open a page to the blog.
+
+
+Note: 
+  - static folder and main.css not used
+  - index.yaml has a manual index for Comment
+  - errors do not display on the page, only in the url (can easily be fixed)

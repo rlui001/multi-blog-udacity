@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+	{% if del_post_id %}
+		Post deleted successfully
+	{% endif %}
+
+	{% for p in posts %}
+		{% if p.key().id()|string != del_post_id|string %}
+			{{ p.render() | safe}}
+			<br>
+			<br>
+		{% endif %}
+	{% endfor %}
+
+{% endblock %}

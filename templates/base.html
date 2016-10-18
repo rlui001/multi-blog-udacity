@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<style type="text/css"> 
+		/* For some reason, I could not use a main.css file, so I put the css in base.html */
+		body {
+			font-family: sans-serif;
+			font-size: 14px;
+			width: 800px;
+			margin: 0 auto;
+			padding: 10px;
+			color: #444;
+		}
+
+		label {
+			display: block;
+			font-size: 20px;
+		}
+
+		label + label {
+			margin-top: 20px;
+		}
+
+		.main-title{
+			text-decoration: none;
+			display: block;
+			color: #222;
+			font-size: 40px;
+			font-weight: bold;
+			text-align: center;
+			margin-bottom: 30px;
+		}
+
+		.post + .post {
+			margin-top: 15px;
+		}
+
+		.post-heading {
+			position: relative;
+			border-bottom: 3px solid #666;
+		}
+
+		.post-title {
+			font-size: 20px;
+			font-weight: bold;
+			text-decoration: none;
+			color: #111;
+
+		}
+
+		.post-date {
+			position: absolute;
+			right: 0px;
+			bottom: 0px;
+			color: #999;
+		}
+
+		.post-content {
+			margin-top: 5px;
+		}
+
+		.login-stuff {
+			position: absolute;
+			right: 0px;
+			top: 0px;
+			font-size: 36px;
+		}
+
+
+
+		</style>
+
+		<title>Udacity Blog Project</title>
+	</head>
+
+	<body>
+			<a href="/" class="main-title">Udacity Blog Project</a>
+			{% if user %}
+				<h1>Currently logged in as: {{user.name}}</h1>
+				<div class="login-stuff">
+					<a href="/newpost">New Post</a>
+					<a href="/logout">Logout</a>
+					<br>
+					<br>
+				</div>
+			{% else %}
+				<div class="login-stuff">
+					<a href="/login">Login</a>
+					<a href="/signup">Sign Up</a>
+				</div>
+			{% endif %}
+
+			<div id="content">
+				{% block content %}
+				{% endblock %}
+			</div>
+	</body>
+</html>

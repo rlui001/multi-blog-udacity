@@ -256,11 +256,11 @@ class NewPost(BlogHandler):
 		if self.user:
 			self.render("newpost.html")
 		else:
-			self.redirect('/login')
+			self.redirect('/login?errormsg=Log in before performing actions')
 
 	def post(self):
 		if not self.user:
-			self.redirect('/')
+			self.redirect('/login?errormsg=Log in before performing actions')
 
 		subject = self.request.get('subject')
 		content = self.request.get('content')
@@ -288,7 +288,7 @@ class DeletePost(BlogHandler):
 				self.redirect('/' + post_id)
 
 		else:
-			self.redirect('/login')
+			self.redirect('/login?errormsg=Log in before performing actions')
 
 class EditPost(BlogHandler):
 	def get(self, post_id):
@@ -302,25 +302,31 @@ class EditPost(BlogHandler):
 				self.redirect('/' + post_id)
 
 		else:
-			self.redirect('/login?error=Log in before performing actions')
+			self.redirect('/login?errormsg=Log in before performing actions')
 
 	def post(self, post_id):
 		if not self.user:
-			self.redirect('/')
+			self.redirect('/login?errormsg=Log in before performing actions')
 
 		subject = self.request.get('subject')
 		content = self.request.get('content')
 
-		if subject and content:
-			key = db.Key.from_path('Post', int(post_id), parent=blog_key())
-			post = db.get(key)
-			post.subject = subject
-			post.content = content
-			post.put()
-			self.redirect('/%s' % post_id)
+		key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+		post = db.get(key)
+
+		if post.user_id == self.user.key().id():
+			if subject and content:
+				key = db.Key.from_path('Post', int(post_id), parent=blog_key())
+				post = db.get(key)
+				post.subject = subject
+				post.content = content
+				post.put()
+				self.redirect('/%s' % post_id)
+			else:
+				error = "You need a subject, and content"
+				self.render('editpost.html', subject=subject, content=content, error=error)
 		else:
-			error = "You need a subject, and content"
-			self.render('editpost.html', subject=subject, content=content, error=error)
+			self.redirect('/%s?errormsg=You cannot modify this post'  % post_id)
 
 class EditComment(BlogHandler):
 	def get(self, post_id, comment_id):
@@ -333,24 +339,29 @@ class EditComment(BlogHandler):
 				self.redirect('/' + post_id)
 
 		else:
-			self.redirect('/login')
+			self.redirect('/login?errormsg=Log in before performing actions')
 
 
 	def post(self, post_id, comment_id):
 		if not self.user:
-			self.redirect('/')
+			self.redirect('/login?errormsg=You must log in before you can edit comments')
 
 		comment = self.request.get('comment')
+		key = db.Key.from_path('Comment', int(comment_id), parent=blog_key())
+		c = db.get(key)
 
-		if comment:
-			key = db.Key.from_path('Comment', int(comment_id), parent=blog_key())
-			c = db.get(key)
-			c.comment = comment
-			c.put()
-			self.redirect('/%s' % post_id)
+		if c.user_id == self.user.key().id():
+			if comment:
+				key = db.Key.from_path('Comment', int(comment_id), parent=blog_key())
+				c = db.get(key)
+				c.comment = comment
+				c.put()
+				self.redirect('/%s' % post_id)
+			else:
+				error = "You need to enter some text"
+				self.render('editcomment.html', comment=comment, error=error)
 		else:
-			error = "You need to enter some text"
-			self.render('editcomment.html', comment=comment, error=error)
+			self.redirect('/%s?errormsg=You cannot modify this comment' % post_id)
 
 class DeleteComment(BlogHandler):
 	"""
@@ -369,7 +380,7 @@ class DeleteComment(BlogHandler):
 				self.redirect('/' + post_id)
 
 		else:
-			self.redirect('/login')
+			self.redirect('/login?errormsg=You must log in before performing actions')
 
 
 

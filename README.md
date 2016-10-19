@@ -18,3 +18,9 @@ Note:
   - static folder and main.css not used
   - index.yaml has a manual index for Comment
   - errors do not display on the page, only in the url (can easily be fixed)
+
+Credits:
+  - Udacity-given solution code for certain parts of the project.
+  
+
+  

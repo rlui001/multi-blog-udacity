@@ -224,7 +224,7 @@ class PostPage(BlogHandler):
 			self.error(404)
 			return
 
-		c = ""
+		c = "this needs to be a string"
 
 		# If user is logged in
 		if self.user:
@@ -285,10 +285,10 @@ class DeletePost(BlogHandler):
 				post.delete()
 				self.redirect('/?del_post_id=' + post_id)
 			else:
-				self.redirect('/' + post_id + '?error=You cannot delete this post')
+				self.redirect('/' + post_id)
 
 		else:
-			self.redirect('/login?error=Log in before performing actions')
+			self.redirect('/login')
 
 class EditPost(BlogHandler):
 	def get(self, post_id):
@@ -299,7 +299,7 @@ class EditPost(BlogHandler):
 				self.render('editpost.html',subject=post.subject,content=post.content)
 
 			else:
-				self.redirect('/' + post_id + '?error=You cannot edit this post')
+				self.redirect('/' + post_id)
 
 		else:
 			self.redirect('/login?error=Log in before performing actions')
@@ -330,10 +330,10 @@ class EditComment(BlogHandler):
 			if c.user_id == self.user.key().id():
 				self.render('editcomment.html', comment=c.comment)
 			else:
-				self.redirect('/' + post_id + '?error=You cannot edit this comment')
+				self.redirect('/' + post_id)
 
 		else:
-			self.redirect('login?error=Log in before performing actions')
+			self.redirect('/login')
 
 
 	def post(self, post_id, comment_id):
@@ -350,9 +350,12 @@ class EditComment(BlogHandler):
 			self.redirect('/%s' % post_id)
 		else:
 			error = "You need to enter some text"
-			self.render('editcomment.html', comment=comment)
+			self.render('editcomment.html', comment=comment, error=error)
 
 class DeleteComment(BlogHandler):
+	"""
+		This class is responsible for deleting comments.
+	"""
 	def get(self, post_id, comment_id):
 		if self.user:
 			key = db.Key.from_path('Comment', int(comment_id), parent=blog_key())
@@ -363,10 +366,10 @@ class DeleteComment(BlogHandler):
 				self.redirect('/' + post_id + '?del_comment_id=' + comment_id)
 
 			else:
-				self.redirect('/' + post_id + '?error=You cannot delete this comment')
+				self.redirect('/' + post_id)
 
 		else:
-			self.redirect('/login?error=Log in before performing actions')
+			self.redirect('/login')
 
 
 
